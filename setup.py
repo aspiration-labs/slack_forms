@@ -2,7 +2,8 @@
 
 """The setup script."""
 
-from setuptools import setup, find_packages
+from typing import List
+from setuptools import setup, find_packages  # type: ignore
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -10,7 +11,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = [ ]
+with open('requirements.txt') as requirements_file:
+    requirements: List[str] = requirements_file.read().split('\n')
 
 setup_requirements = ['pytest-runner', ]
 

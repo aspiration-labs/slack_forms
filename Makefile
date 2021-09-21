@@ -47,11 +47,12 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint: ## check style with flake8
-	flake8 slack_forms tests
+lint: setup.py sample_app slack_forms tests ## check style with flake8
+	flake8 $?
+	mypy $?
 
 test: ## run tests quickly with the default Python
-	pytest
+	pytest -vv
 
 test-all: ## run tests on every Python version with tox
 	tox

@@ -2,35 +2,34 @@
 Slack Forms
 ===========
 
+Forms icing on the Slack cake
 
-.. image:: https://img.shields.io/pypi/v/slack_forms.svg
-        :target: https://pypi.python.org/pypi/slack_forms
+Dev Setup
+---------
+```
+pipenv install -r requirements_dev.txt
+pipenv run mypy --install-types --non-interactive
+```
 
-.. image:: https://img.shields.io/travis/aspiration-labs/slack_forms.svg
-        :target: https://travis-ci.com/aspiration-labs/slack_forms
+Lint and Test
+-------------
+```
+pipenv run make lint test
+```
 
-.. image:: https://readthedocs.org/projects/slack-forms/badge/?version=latest
-        :target: https://slack-forms.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
+Package
+-------
+```
+pipenv run make dist
+```
 
-
-.. image:: https://pyup.io/repos/github/aspiration-labs/slack_forms/shield.svg
-     :target: https://pyup.io/repos/github/aspiration-labs/slack_forms/
-     :alt: Updates
-
-
-
-Django forms icing on the Slack App cake
-
-
-* Free software: ISC license
-* Documentation: https://slack-forms.readthedocs.io.
-
-
-Features
---------
-
-* TODO
+Run Sample App
+--------------
+```
+cp env.sample .env
+vi .env
+pipenv run python sample_app/app.py
+```
 
 Credits
 -------
