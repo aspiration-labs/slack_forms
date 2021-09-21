@@ -6,30 +6,30 @@ Forms icing on the Slack cake
 
 Dev Setup
 ---------
-```
-pipenv install -r requirements_dev.txt
-pipenv run make mypy-types
-```
+::
+
+    pipenv install -r requirements_dev.txt
+    pipenv run make mypy-types
 
 Lint and Test
 -------------
-```
-pipenv run make lint test
-```
+::
+
+    pipenv run make lint test
 
 Package
 -------
-```
-pipenv run make dist
-```
+::
+
+    pipenv run make dist
 
 Run Sample App
 --------------
-```
-cp env.sample .env
-vi .env
-pipenv run python -m sample_app.app
-```
+::
+
+    cp env.sample .env
+    vi .env
+    pipenv run python -m sample_app.app
 
 Credits
 -------
