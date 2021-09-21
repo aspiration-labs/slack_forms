@@ -9,7 +9,6 @@ Dev Setup
 ::
 
     pipenv install -r requirements_dev.txt
-    pipenv run make mypy-types
 
 Lint and Test
 -------------
