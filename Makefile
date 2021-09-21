@@ -51,6 +51,9 @@ lint: setup.py sample_app slack_forms tests ## check style with flake8
 	flake8 $?
 	mypy $?
 
+mypy-types: setup.py sample_app slack_forms tests
+	pipenv run mypy --install-types --non-interactive $?
+
 test: ## run tests quickly with the default Python
 	pytest -vv
 

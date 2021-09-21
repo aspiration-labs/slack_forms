@@ -8,7 +8,7 @@ Dev Setup
 ---------
 ```
 pipenv install -r requirements_dev.txt
-pipenv run mypy --install-types --non-interactive
+pipenv run make mypy-types
 ```
 
 Lint and Test
@@ -28,7 +28,7 @@ Run Sample App
 ```
 cp env.sample .env
 vi .env
-pipenv run python sample_app/app.py
+pipenv run python -m sample_app.app
 ```
 
 Credits
