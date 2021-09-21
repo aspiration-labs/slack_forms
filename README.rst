@@ -8,7 +8,7 @@ Dev Setup
 ---------
 ::
 
-    pipenv install -r requirements_dev.txt
+    pipenv install --dev
 
 Lint and Test
 -------------
