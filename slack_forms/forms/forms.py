@@ -4,7 +4,7 @@
 # All rights reserved.
 #
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional, cast
 from .exceptions import BindError
 from .fields import Field
 
@@ -43,7 +43,8 @@ class BaseForm:
     base_fields: Dict[str, Field] = {}
     declared_fields: Dict[str, Field] = {}
 
-    def __init__(self, state: Dict[str, str] = None):
+    def __init__(self, *, initial: Dict[str, Any] = {}, state: Optional[Dict[str, str]] = None):
+        self.initial = initial
         self.is_bound = state is not None
         self.state_values = state.get('values') if state is not None else None
         self._bound_fields_cache: Dict[str, Field] = {}
@@ -77,8 +78,9 @@ class BaseForm:
     def data(self) -> Dict[str, Any]:
         return {field_name: self[field_name].value for field_name in self.declared_fields}
 
-    def render(self) -> List[Dict[str, Any]]:
-        return [field.render() for field in self.declared_fields.values()]
+    def render(self, initial: Dict[str, Any] = {}) -> List[Dict[str, Any]]:
+        #  See the convo at https://github.com/python/mypy/issues/9430 re: .get(cast(...))
+        return [field.render(self.initial.get(cast(str, field.field_name))) for field in self.declared_fields.values()]
 
 
 class Form(BaseForm, metaclass=DeclarativeFieldsMetaclass):
