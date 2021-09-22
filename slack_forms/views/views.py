@@ -16,8 +16,9 @@ class View:
     form_class: Type[Form] = Form
     callback_id: Optional[str] = None
 
-    def __init__(self, app: App):
+    def __init__(self, app: App, initial: Dict[str, Any] = {}):
         self.app = app
+        self.initial = initial
         if self.callback_id is None:
             self.callback_id = str(uuid.uuid4())
 
@@ -67,7 +68,7 @@ class View:
 class HomeView(View):
 
     def render(self) -> Dict[str, Any]:
-        form = self.get_form()
+        form = self.get_form(initial=self.initial)
         blocks = form.render()
         view = {
             "type": "home",
@@ -85,11 +86,8 @@ class ModalView(View):
     submit_text = 'Submit'
     close_text = 'Cancel'
 
-    def __init__(self, app: App):
-        super().__init__(app)
-
     def render(self) -> Dict[str, Any]:
-        form = self.get_form()
+        form = self.get_form(initial=self.initial)
         blocks = form.render()
         view = {
             "type": "modal",

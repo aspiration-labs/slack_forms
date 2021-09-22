@@ -49,7 +49,7 @@ class Field:
             raise BindError(f"{self.__class__.__name__} value is not bound; did you create the form with state?")
         return self._value
 
-    def render(self) -> Dict[str, Any]:
+    def render(self, initial: Optional[Any] = None) -> Dict[str, Any]:
         raise NotImplementedError
 
 
@@ -59,8 +59,8 @@ class ButtonField(Field):
 
     def __init__(
         self,
-        *,
         text: str,
+        *,
         url: Optional[str] = None,
         interaction_payload_value: Optional[str] = None,
         style: Optional[str] = None,
@@ -72,7 +72,7 @@ class ButtonField(Field):
         self.style = style
         super().__init__(**kwargs)
 
-    def render(self) -> Dict[str, Any]:
+    def render(self, initial: Optional[Any] = None) -> Dict[str, Any]:
         return self.block.make_block(action_id=self.action_id,
                                      text=self.text,
                                      url=self.url,
@@ -86,8 +86,8 @@ class TextField(Field):
 
     def __init__(
         self,
-        *,
         label: str,
+        *,
         multiline: bool = False,
         optional: bool = False,
         initial: str = '',
@@ -101,13 +101,15 @@ class TextField(Field):
         self.placeholder = placeholder
         super().__init__(**kwargs)
 
-    def render(self) -> Dict[str, Any]:
+    def render(self, initial: Optional[Any] = None) -> Dict[str, Any]:
+        if initial is None:
+            initial = self.initial
         return self.block.make_block(action_id=self.action_id,
                                      block_id=self.block_id,
                                      optional=self.optional,
                                      label=self.label,
                                      multiline=self.multiline,
-                                     bound_data=self.initial,
+                                     bound_data=initial,
                                      placeholder=self.placeholder)
 
 
@@ -115,40 +117,60 @@ class CheckboxField(Field):
 
     block = CheckboxBlock()
 
-    def __init__(self, *, label: str, options: List[str], optional: bool = False, initial: List[str] = [], **kwargs):
+    def __init__(
+        self,
+        label: str,
+        options: List[str],
+        *,
+        optional: bool = False,
+        initial: List[str] = [],
+        **kwargs
+    ):
         self.label = label
         self.options = options
         self.optional = optional
         self.initial = initial
         super().__init__(**kwargs)
 
-    def render(self) -> Dict[str, Any]:
+    def render(self, initial: Optional[Any] = None) -> Dict[str, Any]:
+        if initial is None:
+            initial = self.initial
         return self.block.make_block(action_id=self.action_id,
                                      block_id=self.block_id,
                                      optional=self.optional,
                                      label=self.label,
                                      options=self.options,
-                                     bound_data=self.initial)
+                                     bound_data=initial)
 
 
 class RadioButtonField(Field):
 
     block = RadioButtonBlock()
 
-    def __init__(self, *, label: str, options: List[str], optional: bool = False, initial: List[str] = [], **kwargs):
+    def __init__(
+        self,
+        label: str,
+        options: List[str],
+        *,
+        optional: bool = False,
+        initial: List[str] = [],
+        **kwargs
+    ):
         self.label = label
         self.options = options
         self.optional = optional
         self.initial = initial
         super().__init__(**kwargs)
 
-    def render(self) -> Dict[str, Any]:
+    def render(self, initial: Optional[Any] = None) -> Dict[str, Any]:
+        if initial is None:
+            initial = self.initial
         return self.block.make_block(action_id=self.action_id,
                                      block_id=self.block_id,
                                      optional=self.optional,
                                      label=self.label,
                                      options=self.options,
-                                     bound_data=self.initial)
+                                     bound_data=initial)
 
 
 class MultiSelectField(Field):
@@ -157,9 +179,9 @@ class MultiSelectField(Field):
 
     def __init__(
         self,
-        *,
         label: str,
         options: List[str],
+        *,
         optional: bool = False,
         initial: List[str] = [],
         placeholder: Optional[str] = None,
@@ -172,11 +194,13 @@ class MultiSelectField(Field):
         self.placeholder = placeholder
         super().__init__(**kwargs)
 
-    def render(self) -> Dict[str, Any]:
+    def render(self, initial: Optional[Any] = None) -> Dict[str, Any]:
+        if initial is None:
+            initial = self.initial
         return self.block.make_block(action_id=self.action_id,
                                      block_id=self.block_id,
                                      optional=self.optional,
                                      label=self.label,
                                      options=self.options,
-                                     bound_data=self.initial,
+                                     bound_data=initial,
                                      placeholder=self.placeholder)
