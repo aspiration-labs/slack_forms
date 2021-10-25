@@ -1,7 +1,8 @@
 import re
 import uuid
+import json
 import inspect
-from typing import Callable, Type, Dict, Any, Iterable, Tuple, Optional
+from typing import Callable, Type, Dict, Any, Iterable, Tuple, Optional, Union
 from slack_bolt import App
 from ..forms.forms import Form
 from ..logging.logging import getLogger
@@ -19,6 +20,8 @@ class View:
     def __init__(self, app: App, initial: Dict[str, Any] = {}):
         self.app = app
         self.initial = initial
+        self.client: Optional[Any] = None
+        self.hidden: Optional[Union[str, Dict[str, Any]]] = None
         if self.callback_id is None:
             self.callback_id = str(uuid.uuid4())
 
@@ -26,6 +29,13 @@ class View:
         ack()
         logger.info(f'{self.callback_id} submitted')
         form = self.get_form(state=view['state'])
+        self.client = client
+        if 'private_metadata' in body['view']:
+            hidden = body['view']['private_metadata']
+            try:
+                self.hidden = json.loads(hidden)
+            except json.JSONDecodeError:
+                self.hidden = hidden
         self.form_valid(form)
 
     def get_form(self, **kwargs) -> Form:
@@ -58,8 +68,14 @@ class View:
         return ((form.declared_fields[field_name].action_id, action)
                 for field_name, action in self._action_attrs(form))
 
-    def render(self) -> Dict[str, Any]:
-        pass
+    def render(self, hidden: Optional[Union[str, Dict[str, Any]]] = None) -> Dict[str, Any]:
+        """ compose hidden form data, aka private_metadata """
+
+        if hidden is None:
+            return {}
+        if isinstance(hidden, Dict):
+            hidden = json.dumps(hidden)
+        return {'private_metadata': hidden}
 
     def form_valid(self, form: Form):
         logger.info(f"default action for {self.__class__.__name__}.{form.__class__.__name__}")
@@ -67,16 +83,14 @@ class View:
 
 class HomeView(View):
 
-    def render(self) -> Dict[str, Any]:
+    def render(self, hidden: Optional[Union[str, Dict[str, Any]]] = None) -> Dict[str, Any]:
         form = self.get_form(initial=self.initial)
         blocks = form.render()
         view = {
             "type": "home",
-            "blocks": [{
-                "type": "actions",
-                "elements": blocks
-            }]
+            "blocks": blocks,
         }
+        view |= super().render(hidden)
         return view
 
 
@@ -86,7 +100,7 @@ class ModalView(View):
     submit_text = 'Submit'
     close_text = 'Cancel'
 
-    def render(self) -> Dict[str, Any]:
+    def render(self, hidden: Optional[Union[str, Dict[str, Any]]] = None) -> Dict[str, Any]:
         form = self.get_form(initial=self.initial)
         blocks = form.render()
         view = {
@@ -109,4 +123,5 @@ class ModalView(View):
             },
             "blocks": blocks,
         }
+        view |= super().render(hidden)
         return view

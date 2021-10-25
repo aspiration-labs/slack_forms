@@ -7,10 +7,14 @@ true = True
 class Block:
 
     make_block: Callable[..., Dict[str, Any]]
+    has_state: bool = True
     value_from_state: Callable[..., Union[str, List[str]]]
 
 
 class ButtonBlock(Block):
+
+    def __init__(self):
+        self.has_state = False
 
     def make_block(
         self,
@@ -22,12 +26,18 @@ class ButtonBlock(Block):
         style: Optional[str]
     ) -> Dict[str, Any]:
         block = {
-            "type": "button",
-            "text": {
-                "type": "plain_text",
-                "text": text
-            },
-            "action_id": action_id
+            "type": "actions",
+            "elements": [
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": text,
+                        "emoji": true
+                    },
+                    "action_id": action_id
+                }
+            ]
         }
         if url:
             block['url'] = str(url)

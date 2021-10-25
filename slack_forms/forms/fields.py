@@ -36,7 +36,10 @@ class Field:
 
     def bind_field(self, state_values: Dict[str, Any]) -> 'Field':
         try:
-            self._value = self.block.value_from_state(state_values[self.block_id][self.action_id])
+            if self.block.has_state:
+                self._value = self.block.value_from_state(state_values[self.block_id][self.action_id])
+            else:
+                self._value = None
         except KeyError:
             raise BindError(f"{self.__class__.__name__} cannot find state for "
                             f"block {self.block_id} action {self.action_id}")

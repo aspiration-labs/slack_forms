@@ -47,9 +47,18 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint: setup.py sample_app slack_forms tests ## check style with flake8
+lint: lint/flake8 lint/mypy black/check
+
+LINT_SRC := setup.py sample_app slack_forms tests
+
+lint/flake8: $(LINT_SRC)  ## check style with flake8
 	flake8 $?
-	mypy --install-types --non-interactive $?
+lint/mypy: $(LINT_SRC)  ## check style with mypy
+	mypy $?
+black/check: $(LINT_SRC)  ## check style with black
+	black --check $?
+black/diff: $(LINT_SRC)
+	black --diff $?
 
 test: ## run tests quickly with the default Python
 	pytest -vv

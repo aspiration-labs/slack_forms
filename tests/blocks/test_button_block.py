@@ -35,15 +35,13 @@ def expected_block(action_id, text, expected_value):
         https://api.slack.com/reference/block-kit/block-elements#button
     """
 
-    return {
-        "type": "button",
-        "text": {
-            "type": "plain_text",
-            "text": text
-        },
-        "value": expected_value,
-        "action_id": action_id
-    }
+    return {'type': 'actions',
+            'elements': [{'type': 'button',
+                          'text': {'type': 'plain_text',
+                                   'text': text,
+                                   'emoji': True},
+                          'action_id': action_id}],
+            'value': expected_value}
 
 
 @pytest.fixture
