@@ -1,6 +1,6 @@
 from typing import Callable, List, Dict, Any, Union, Optional
 from yarl import URL
-from slugify import slugify
+from slugify import slugify  # type: ignore
 from .exceptions import BindError
 from .blocks import (
     Block,
