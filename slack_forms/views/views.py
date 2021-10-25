@@ -27,11 +27,11 @@ class View:
 
     def handle_view(self, ack, body, client, view):
         ack()
-        logger.info(f'{self.callback_id} submitted')
-        form = self.get_form(state=view['state'])
+        logger.info(f"{self.callback_id} submitted")
+        form = self.get_form(state=view["state"])
         self.client = client
-        if 'private_metadata' in body['view']:
-            hidden = body['view']['private_metadata']
+        if "private_metadata" in body["view"]:
+            hidden = body["view"]["private_metadata"]
             try:
                 self.hidden = json.loads(hidden)
             except json.JSONDecodeError:
@@ -53,37 +53,46 @@ class View:
             self.app.action(action_id)(action)
 
     def _action_attrs(self, form: Form) -> Iterable[Tuple[str, Callable]]:
-        """ returns iterable of (field_name, action_method) for qualifying methods """
-        rule = re.compile('(?P<field_name>.+)_action$')
-        for field_name_match, action in map(lambda attr: (rule.match(attr), getattr(self, attr)), dir(self)):
+        """returns iterable of (field_name, action_method) for qualifying methods"""
+        rule = re.compile("(?P<field_name>.+)_action$")
+        for field_name_match, action in map(
+            lambda attr: (rule.match(attr), getattr(self, attr)), dir(self)
+        ):
             if (
-                field_name_match is not None and
-                field_name_match.groups()[0] in form.declared_fields and
-                inspect.ismethod(action)
+                field_name_match is not None
+                and field_name_match.groups()[0] in form.declared_fields
+                and inspect.ismethod(action)
             ):
                 yield field_name_match.groups()[0], action
 
     def _action_handlers(self, form) -> Iterable[Tuple[str, Callable]]:
-        """ returns iterable of (action_id, action_method) for qualifying methods """
-        return ((form.declared_fields[field_name].action_id, action)
-                for field_name, action in self._action_attrs(form))
+        """returns iterable of (action_id, action_method) for qualifying methods"""
+        return (
+            (form.declared_fields[field_name].action_id, action)
+            for field_name, action in self._action_attrs(form)
+        )
 
-    def render(self, hidden: Optional[Union[str, Dict[str, Any]]] = None) -> Dict[str, Any]:
-        """ compose hidden form data, aka private_metadata """
+    def render(
+        self, hidden: Optional[Union[str, Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
+        """compose hidden form data, aka private_metadata"""
 
         if hidden is None:
             return {}
         if isinstance(hidden, Dict):
             hidden = json.dumps(hidden)
-        return {'private_metadata': hidden}
+        return {"private_metadata": hidden}
 
     def form_valid(self, form: Form):
-        logger.info(f"default action for {self.__class__.__name__}.{form.__class__.__name__}")
+        logger.info(
+            f"default action for {self.__class__.__name__}.{form.__class__.__name__}"
+        )
 
 
 class HomeView(View):
-
-    def render(self, hidden: Optional[Union[str, Dict[str, Any]]] = None) -> Dict[str, Any]:
+    def render(
+        self, hidden: Optional[Union[str, Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
         form = self.get_form(initial=self.initial)
         blocks = form.render()
         view = {
@@ -96,31 +105,21 @@ class HomeView(View):
 
 class ModalView(View):
 
-    title_text = 'Modal'
-    submit_text = 'Submit'
-    close_text = 'Cancel'
+    title_text = "Modal"
+    submit_text = "Submit"
+    close_text = "Cancel"
 
-    def render(self, hidden: Optional[Union[str, Dict[str, Any]]] = None) -> Dict[str, Any]:
+    def render(
+        self, hidden: Optional[Union[str, Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
         form = self.get_form(initial=self.initial)
         blocks = form.render()
         view = {
             "type": "modal",
             "callback_id": self.callback_id,
-            "title": {
-                "type": "plain_text",
-                "text": self.title_text,
-                "emoji": true
-            },
-            "submit": {
-                "type": "plain_text",
-                "text": self.submit_text,
-                "emoji": true
-            },
-            "close": {
-                "type": "plain_text",
-                "text": self.close_text,
-                "emoji": true
-            },
+            "title": {"type": "plain_text", "text": self.title_text, "emoji": true},
+            "submit": {"type": "plain_text", "text": self.submit_text, "emoji": true},
+            "close": {"type": "plain_text", "text": self.close_text, "emoji": true},
             "blocks": blocks,
         }
         view |= super().render(hidden)

@@ -8,8 +8,10 @@ try:
     app_token = os.environ["SLACK_BOT_TOKEN"]
     app_signing_secret = os.environ["SLACK_SIGNING_SECRET"]
 except KeyError:
-    print("Set SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET env vars for your app.\n"
-          "See https://api.slack.com/authentication/basics for more information")
+    print(
+        "Set SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET env vars for your app.\n"
+        "See https://api.slack.com/authentication/basics for more information"
+    )
     sys.exit(1)
 
 
@@ -26,22 +28,30 @@ app = App(
 
 class PizzaOrderForm(forms.Form):
 
-    size = forms.RadioButtonField(label='Pizza Size:', options=['slice', 'small', 'medium', 'large'])
-    toppings = forms.MultiSelectField(label='Pizza Toppings',
-                                      options=['pepperoni', 'onions', 'sausage', 'bell peppers'],
-                                      optional=True)
-    extras = forms.CheckboxField(label='Extras',
-                                 options=['Parmesan', 'Red Pepper', 'Napkins', 'Yellow Peppers'],
-                                 optional=True)
-    special_requests = forms.TextField(label='Special Requests',
-                                       placeholder='Anything else about your order?',
-                                       optional=True,
-                                       multiline=True)
+    size = forms.RadioButtonField(
+        label="Pizza Size:", options=["slice", "small", "medium", "large"]
+    )
+    toppings = forms.MultiSelectField(
+        label="Pizza Toppings",
+        options=["pepperoni", "onions", "sausage", "bell peppers"],
+        optional=True,
+    )
+    extras = forms.CheckboxField(
+        label="Extras",
+        options=["Parmesan", "Red Pepper", "Napkins", "Yellow Peppers"],
+        optional=True,
+    )
+    special_requests = forms.TextField(
+        label="Special Requests",
+        placeholder="Anything else about your order?",
+        optional=True,
+        multiline=True,
+    )
 
 
 class PizzaOrderView(views.ModalView):
 
-    title_text = 'Pizza Order'
+    title_text = "Pizza Order"
     form_class = PizzaOrderForm
 
     def form_valid(self, form: forms.Form):
@@ -50,7 +60,7 @@ class PizzaOrderView(views.ModalView):
 
 class HomeForm(forms.Form):
 
-    pizza_order_button = forms.ButtonField(text='Order a Pizza')
+    pizza_order_button = forms.ButtonField(text="Order a Pizza")
 
 
 class HomeView(views.HomeView):
@@ -66,10 +76,10 @@ class HomeView(views.HomeView):
                 view=view,
             )
         except Exception as e:
-            logger.error(f"Error opening view: {e}", extra={'props': {'view': view}})
+            logger.error(f"Error opening view: {e}", extra={"props": {"view": view}})
 
 
-@app.event('app_home_opened')
+@app.event("app_home_opened")
 def app_home_opened_action(client, event):
     view = HomeView(app).render()
     try:
@@ -78,10 +88,10 @@ def app_home_opened_action(client, event):
             view=view,
         )
     except Exception as e:
-        logger.error(f"Error opening view: {e}", extra={'props': {'view': view}})
+        logger.error(f"Error opening view: {e}", extra={"props": {"view": view}})
 
 
 # Start your app
 if __name__ == "__main__":
-    port = os.environ.get('PORT', 3000)
+    port = os.environ.get("PORT", 3000)
     app.start(port=int(port))

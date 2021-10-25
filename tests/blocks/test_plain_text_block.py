@@ -43,9 +43,9 @@ def expected_value():
 @pytest.fixture
 def expected_block(action_id, block_id, optional, label, placeholder):
     """
-        Default input button from app.slack.com/block-kit-builder
+    Default input button from app.slack.com/block-kit-builder
 
-        https://api.slack.com/reference/block-kit/block-elements#input
+    https://api.slack.com/reference/block-kit/block-elements#input
     """
 
     return {
@@ -56,16 +56,9 @@ def expected_block(action_id, block_id, optional, label, placeholder):
             "type": "plain_text_input",
             "multiline": true,
             "action_id": action_id,
-            "placeholder": {
-                "type": "plain_text",
-                "text": placeholder
-            }
+            "placeholder": {"type": "plain_text", "text": placeholder},
         },
-        "label": {
-            "type": "plain_text",
-            "text": label,
-            "emoji": true
-        }
+        "label": {"type": "plain_text", "text": label, "emoji": true},
     }
 
 
@@ -75,7 +68,7 @@ def block_state(expected_value):
 
 
 def test_make_block(action_id, block_id, optional, label, placeholder, expected_block):
-    """ Validate PlainTextBlock make_block """
+    """Validate PlainTextBlock make_block"""
 
     block = PlainTextBlock().make_block(
         action_id=action_id,
@@ -84,13 +77,13 @@ def test_make_block(action_id, block_id, optional, label, placeholder, expected_
         label=label,
         multiline=True,
         bound_data=None,
-        placeholder=placeholder
+        placeholder=placeholder,
     )
     assert block == expected_block
 
 
 def test_value_from_state(expected_value, block_state):
-    """ Validate PlainTextBlock value_from_state """
+    """Validate PlainTextBlock value_from_state"""
 
     value = PlainTextBlock().value_from_state(block_state)
     assert value == expected_value

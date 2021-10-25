@@ -44,9 +44,9 @@ def initial_values(values) -> List[str]:
 @pytest.fixture
 def expected_block(action_id, block_id, optional, label, values, initial_values) -> Any:
     """
-        Default input button from app.slack.com/block-kit-builder
+    Default input button from app.slack.com/block-kit-builder
 
-        https://api.slack.com/reference/block-kit/block-elements#checkboxes
+    https://api.slack.com/reference/block-kit/block-elements#checkboxes
     """
 
     return {
@@ -57,46 +57,24 @@ def expected_block(action_id, block_id, optional, label, values, initial_values)
             "type": "checkboxes",
             "options": [
                 {
-                    "text": {
-                        "type": "plain_text",
-                        "text": values[0],
-                        "emoji": true
-                    },
-                    "value": values[0]
+                    "text": {"type": "plain_text", "text": values[0], "emoji": true},
+                    "value": values[0],
                 },
                 {
-                    "text": {
-                        "type": "plain_text",
-                        "text": values[1],
-                        "emoji": true
-                    },
-                    "value": values[1]
+                    "text": {"type": "plain_text", "text": values[1], "emoji": true},
+                    "value": values[1],
                 },
                 {
-                    "text": {
-                        "type": "plain_text",
-                        "text": values[2],
-                        "emoji": true
-                    },
-                    "value": values[2]
-                }
+                    "text": {"type": "plain_text", "text": values[2], "emoji": true},
+                    "value": values[2],
+                },
             ],
             "initial_options": [
-                {
-                    'text': {
-                        'type': 'plain_text',
-                        'text': values[0]
-                    },
-                    'value': values[0]
-                }
+                {"text": {"type": "plain_text", "text": values[0]}, "value": values[0]}
             ],
-            "action_id": action_id
+            "action_id": action_id,
         },
-        "label": {
-            "type": "plain_text",
-            "text": label,
-            "emoji": true
-        }
+        "label": {"type": "plain_text", "text": label, "emoji": true},
     }
 
 
@@ -105,8 +83,10 @@ def block_state(initial_values) -> Any:
     return {"selected_options": [{"value": initial_values[0]}]}
 
 
-def test_make_block(action_id, block_id, optional, label, values, initial_values, expected_block):
-    """ Validate PlainTextBlock make_block """
+def test_make_block(
+    action_id, block_id, optional, label, values, initial_values, expected_block
+):
+    """Validate PlainTextBlock make_block"""
 
     block = CheckboxBlock().make_block(
         action_id=action_id,
@@ -114,13 +94,13 @@ def test_make_block(action_id, block_id, optional, label, values, initial_values
         optional=optional,
         label=label,
         options=values,
-        bound_data=initial_values
+        bound_data=initial_values,
     )
     assert block == expected_block
 
 
 def test_value_from_state(initial_values, block_state):
-    """ Validate PlainTextBlock value_from_state """
+    """Validate PlainTextBlock value_from_state"""
 
     value = CheckboxBlock().value_from_state(block_state)
     assert value == initial_values

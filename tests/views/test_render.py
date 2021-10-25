@@ -9,10 +9,10 @@ from ..fixtures.fields import test_fields
 
 
 def get_element(block: Dict[str, Any]) -> str:
-    if block['type'] == 'actions':
-        return block['elements'][0]['type']
-    elif block['type'] == 'input':
-        return block['element']['type']
+    if block["type"] == "actions":
+        return block["elements"][0]["type"]
+    elif block["type"] == "input":
+        return block["element"]["type"]
     else:
         raise Exception(f'cannot test for block type {block["type"]}')
 
@@ -20,14 +20,26 @@ def get_element(block: Dict[str, Any]) -> str:
 def test_modal_render(slack_app, test_fields, test_form_class, test_modal_view_class):
     view: views.ModalView = test_modal_view_class(slack_app)
     rendered = view.render()
-    types = [get_element(block) for block in rendered['blocks']]
+    types = [get_element(block) for block in rendered["blocks"]]
 
-    assert types == ['button', 'plain_text_input', 'checkboxes', 'radio_buttons', 'multi_static_select']
+    assert types == [
+        "button",
+        "plain_text_input",
+        "checkboxes",
+        "radio_buttons",
+        "multi_static_select",
+    ]
 
 
 def test_home_render(slack_app, test_fields, test_form_class, test_home_view_class):
     view: views.ModalView = test_home_view_class(slack_app)
     rendered = view.render()
-    types = [get_element(block) for block in rendered['blocks']]
+    types = [get_element(block) for block in rendered["blocks"]]
 
-    assert types == ['button', 'plain_text_input', 'checkboxes', 'radio_buttons', 'multi_static_select']
+    assert types == [
+        "button",
+        "plain_text_input",
+        "checkboxes",
+        "radio_buttons",
+        "multi_static_select",
+    ]

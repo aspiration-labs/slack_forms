@@ -12,7 +12,6 @@ class Block:
 
 
 class ButtonBlock(Block):
-
     def __init__(self):
         self.has_state = False
 
@@ -30,29 +29,28 @@ class ButtonBlock(Block):
             "elements": [
                 {
                     "type": "button",
-                    "text": {
-                        "type": "plain_text",
-                        "text": text,
-                        "emoji": true
-                    },
-                    "action_id": action_id
+                    "text": {"type": "plain_text", "text": text, "emoji": true},
+                    "action_id": action_id,
                 }
-            ]
+            ],
         }
         if url:
-            block['url'] = str(url)
+            block["url"] = str(url)
         if value:
-            block['value'] = value
-        if style and style in ('default', 'primary', 'danger',):
-            block['style'] = style
+            block["value"] = value
+        if style and style in (
+            "default",
+            "primary",
+            "danger",
+        ):
+            block["style"] = style
         return block
 
     def value_from_state(self, block_state: Dict[str, Any]) -> str:
-        return block_state['value']
+        return block_state["value"]
 
 
 class PlainTextBlock(Block):
-
     def make_block(
         self,
         *,
@@ -74,25 +72,20 @@ class PlainTextBlock(Block):
                 "action_id": action_id,
                 "placeholder": {
                     "type": "plain_text",
-                    "text": placeholder if placeholder is not None else "Enter text"
-                }
+                    "text": placeholder if placeholder is not None else "Enter text",
+                },
             },
-            "label": {
-                "type": "plain_text",
-                "text": label,
-                "emoji": true
-            }
+            "label": {"type": "plain_text", "text": label, "emoji": true},
         }
         if bound_data:
             block["element"]["initial_value"] = bound_data
         return block
 
     def value_from_state(self, block_state: Dict[str, Any]) -> str:
-        return '' if block_state['value'] is None else block_state['value']
+        return "" if block_state["value"] is None else block_state["value"]
 
 
 class CheckboxBlock(Block):
-
     def make_block(
         self,
         *,
@@ -110,44 +103,34 @@ class CheckboxBlock(Block):
             "element": {
                 "type": "checkboxes",
                 "options": [self._make_option(value, value) for value in options],
-                "action_id": action_id
+                "action_id": action_id,
             },
-            "label": {
-                "type": "plain_text",
-                "text": label,
-                "emoji": true
-            }
+            "label": {"type": "plain_text", "text": label, "emoji": true},
         }
         if bound_data:
-            block["element"]["initial_options"] = [self._make_initial_options(value, value) for value in bound_data]
+            block["element"]["initial_options"] = [
+                self._make_initial_options(value, value) for value in bound_data
+            ]
 
         return block
 
     def _make_option(self, value: str, text: str) -> Dict[str, Any]:
         return {
-            "text": {
-                "type": "plain_text",
-                "text": text,
-                "emoji": true
-            },
-            "value": value
+            "text": {"type": "plain_text", "text": text, "emoji": true},
+            "value": value,
         }
 
     def _make_initial_options(self, value: str, text: str) -> Dict[str, Any]:
         return {
-            "text": {
-                "type": "plain_text",
-                "text": text
-            },
+            "text": {"type": "plain_text", "text": text},
             "value": value,
         }
 
     def value_from_state(self, block_state: Dict[str, Any]) -> List[str]:
-        return [option['value'] for option in block_state['selected_options']]
+        return [option["value"] for option in block_state["selected_options"]]
 
 
 class RadioButtonBlock(Block):
-
     def make_block(
         self,
         *,
@@ -155,8 +138,7 @@ class RadioButtonBlock(Block):
         block_id: str,
         optional: bool,
         label: str,
-        options:
-        List[str],
+        options: List[str],
         bound_data: List[str]
     ) -> Dict[str, Any]:
         block: Dict[str, Any] = {
@@ -166,44 +148,38 @@ class RadioButtonBlock(Block):
             "element": {
                 "type": "radio_buttons",
                 "options": [self._make_option(value, value) for value in options],
-                "action_id": action_id
+                "action_id": action_id,
             },
-            "label": {
-                "type": "plain_text",
-                "text": label,
-                "emoji": true
-            }
+            "label": {"type": "plain_text", "text": label, "emoji": true},
         }
         if bound_data:
-            block["element"]["initial_options"] = [self._make_initial_options(value, value) for value in bound_data]
+            block["element"]["initial_options"] = [
+                self._make_initial_options(value, value) for value in bound_data
+            ]
 
         return block
 
     def _make_option(self, value: str, text: str) -> Dict[str, Any]:
         return {
-            "text": {
-                "type": "plain_text",
-                "text": text,
-                "emoji": true
-            },
-            "value": value
+            "text": {"type": "plain_text", "text": text, "emoji": true},
+            "value": value,
         }
 
     def _make_initial_options(self, value: str, text: str) -> Dict[str, Any]:
         return {
-            "text": {
-                "type": "plain_text",
-                "text": text
-            },
+            "text": {"type": "plain_text", "text": text},
             "value": value,
         }
 
     def value_from_state(self, block_state: Dict[str, Any]) -> str:
-        return block_state['selected_option']['value'] if block_state['selected_option'] is not None else None
+        return (
+            block_state["selected_option"]["value"]
+            if block_state["selected_option"] is not None
+            else None
+        )
 
 
 class MultiSelectBlock(Block):
-
     def make_block(
         self,
         *,
@@ -224,40 +200,31 @@ class MultiSelectBlock(Block):
                 "placeholder": {
                     "type": "plain_text",
                     "text": placeholder if placeholder is not None else "Select items",
-                    "emoji": true
+                    "emoji": true,
                 },
                 "options": [self._make_option(value, value) for value in options],
-                "action_id": action_id
+                "action_id": action_id,
             },
-            "label": {
-                "type": "plain_text",
-                "text": label,
-                "emoji": true
-            }
+            "label": {"type": "plain_text", "text": label, "emoji": true},
         }
         if bound_data:
-            block["element"]["initial_options"] = [self._make_initial_options(value, value) for value in bound_data]
+            block["element"]["initial_options"] = [
+                self._make_initial_options(value, value) for value in bound_data
+            ]
 
         return block
 
     def _make_option(self, value: str, text: str) -> Dict[str, Any]:
         return {
-            "text": {
-                "type": "plain_text",
-                "text": text,
-                "emoji": true
-            },
-            "value": value
+            "text": {"type": "plain_text", "text": text, "emoji": true},
+            "value": value,
         }
 
     def _make_initial_options(self, value: str, text: str) -> Dict[str, Any]:
         return {
-            "text": {
-                "type": "plain_text",
-                "text": text
-            },
+            "text": {"type": "plain_text", "text": text},
             "value": value,
         }
 
     def value_from_state(self, block_state: Dict[str, Any]) -> List[str]:
-        return [option['value'] for option in block_state['selected_options']]
+        return [option["value"] for option in block_state["selected_options"]]

@@ -30,18 +30,22 @@ def expected_value():
 @pytest.fixture
 def expected_block(action_id, text, expected_value):
     """
-        Default input button from app.slack.com/block-kit-builder
+    Default input button from app.slack.com/block-kit-builder
 
-        https://api.slack.com/reference/block-kit/block-elements#button
+    https://api.slack.com/reference/block-kit/block-elements#button
     """
 
-    return {'type': 'actions',
-            'elements': [{'type': 'button',
-                          'text': {'type': 'plain_text',
-                                   'text': text,
-                                   'emoji': True},
-                          'action_id': action_id}],
-            'value': expected_value}
+    return {
+        "type": "actions",
+        "elements": [
+            {
+                "type": "button",
+                "text": {"type": "plain_text", "text": text, "emoji": True},
+                "action_id": action_id,
+            }
+        ],
+        "value": expected_value,
+    }
 
 
 @pytest.fixture
@@ -50,14 +54,16 @@ def block_state(expected_value):
 
 
 def test_make_block(action_id, text, expected_value, expected_block):
-    """ Validate ButtonBlock make_block """
+    """Validate ButtonBlock make_block"""
 
-    block = ButtonBlock().make_block(action_id=action_id, text=text, url=None, value=expected_value, style=None)
+    block = ButtonBlock().make_block(
+        action_id=action_id, text=text, url=None, value=expected_value, style=None
+    )
     assert block == expected_block
 
 
 def test_value_from_state(expected_value, block_state):
-    """ Validate ButtonBlock value_from_state """
+    """Validate ButtonBlock value_from_state"""
 
     value = ButtonBlock().value_from_state(block_state)
     assert value == expected_value
