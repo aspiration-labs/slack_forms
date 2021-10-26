@@ -59,6 +59,8 @@ black/check: $(LINT_SRC)  ## check style with black
 	black --check $?
 black/diff: $(LINT_SRC)
 	black --diff $?
+black/format: $(LINT_SRC)
+	black $?
 
 test: ## run tests quickly with the default Python
 	pytest -vv

@@ -10,11 +10,13 @@ class MockSlackBoltApp:
     def view(self, callback_id):
         def set_handler(handler: Callable):
             self.view_handlers[callback_id] = handler
+
         return set_handler
 
     def action(self, action_id):
         def set_handler(handler: Callable):
             self.action_handlers[action_id] = handler
+
         return set_handler
 
 
